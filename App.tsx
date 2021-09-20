@@ -1,12 +1,14 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import StackNavigator from './src/navigator/StackNavigator';
 
 const App = () => {
   return (
-    <View style={{backgroundColor: '#fff', flex: 1}}>
-      <Text>a</Text>
-    </View>
+    <NavigationContainer>
+      <StackNavigator />
+    </NavigationContainer>
   );
 };
 
