@@ -41,7 +41,8 @@ const RegisterForm = () => {
       .required(),
     name: yup
       .string()
-      .min(8, min => `Name must have at least ${min} characters`),
+      .min(8, min => `Name must have at least ${min} characters`)
+      .required(),
   });
   const {width} = useWindowDimensions();
 

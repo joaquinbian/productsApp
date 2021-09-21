@@ -11,10 +11,16 @@ import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
 import ReactLogo from '../components/ReactLogo';
 import RegisterForm from '../components/RegisterForm';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParams} from '../navigator/StackNavigator';
 
 const Register = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
   return (
     //Tambien en lugar de un KeyboardAvoidingView podemos usar un ScrollView
+
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{
@@ -23,6 +29,20 @@ const Register = () => {
         alignItems: 'center',
         backgroundColor: '#7472F3',
       }}>
+      <Button
+        title="Back"
+        containerStyle={{
+          position: 'absolute',
+          backgroundColor: 'red',
+          zIndex: 1000,
+          top: 10,
+          left: 15,
+        }}
+        buttonStyle={{backgroundColor: '#fff'}}
+        titleStyle={{marginHorizontal: 5, color: '#4F4CF9'}}
+        icon={<Icon name="chevron-back-outline" size={20} color="#4F4CF9" />}
+        onPress={() => navigation.replace('Login')}
+      />
       <ReactLogo title="Register" />
       <RegisterForm />
     </KeyboardAvoidingView>
