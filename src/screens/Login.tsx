@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import {Image} from 'react-native-elements';
 import Background from '../components/Background';
 import LoginForm from '../components/LoginForm';
@@ -10,11 +16,11 @@ const Login = () => {
   return (
     <>
       <Background />
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <KeyboardAvoidingView
+        style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
         <ReactLogo />
-        {/* <Text>Login screen</Text> */}
         <LoginForm />
-      </View>
+      </KeyboardAvoidingView>
     </>
   );
 };
