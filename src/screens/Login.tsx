@@ -1,24 +1,28 @@
+import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
   KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from 'react-native';
 import {Image} from 'react-native-elements';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Background from '../components/Background';
 import LoginForm from '../components/LoginForm';
 import ReactLogo from '../components/ReactLogo';
-
-const Login = () => {
+interface Props extends StackScreenProps<any, any> {}
+const Login = ({navigation}: Props) => {
   const {height, width} = useWindowDimensions();
+
   return (
     <>
       <Background />
       <KeyboardAvoidingView
-        style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        enabled
+        style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ReactLogo />
         <Text style={styles.title}>Login</Text>
         <LoginForm />

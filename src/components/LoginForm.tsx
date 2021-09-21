@@ -1,10 +1,19 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
 import {Formik} from 'formik';
 import {Input, Button} from 'react-native-elements';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParams} from '../navigator/StackNavigator';
 
 interface initialValues {
   email: string;
@@ -29,10 +38,19 @@ const LoginForm = () => {
       .required(),
   });
   const {width} = useWindowDimensions();
+
+  //esta configuracion la hice para poder usar el replace
+  const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
+
+  const onSubmit = (values: initialValues) => {
+    console.log(values);
+    Keyboard.dismiss();
+    navigation.replace('Home');
+  };
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={values => console.log(values)}
+      onSubmit={values => onSubmit(values)}
       validationSchema={loginSchema}>
       {({handleSubmit, handleChange, errors, isValid, handleBlur, touched}) => {
         return (
