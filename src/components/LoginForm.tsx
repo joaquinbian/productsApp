@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import {Formik} from 'formik';
 import {Input, Button} from 'react-native-elements';
 import * as yup from 'yup';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface initialValues {
   email: string;
@@ -10,6 +12,7 @@ interface initialValues {
 }
 
 const LoginForm = () => {
+  const [showPassowrd, setShowPassowrd] = useState(false);
   const initialValues: initialValues = {
     email: '',
     password: '',
@@ -49,6 +52,7 @@ const LoginForm = () => {
               labelStyle={styles.labelStyle}
               inputContainerStyle={styles.inputStyle}
               errorMessage={touched.email ? errors.email : undefined}
+              inputStyle={{color: '#fff'}}
             />
 
             <Input
@@ -60,6 +64,18 @@ const LoginForm = () => {
               labelStyle={styles.labelStyle}
               inputContainerStyle={styles.inputStyle}
               errorMessage={touched.password ? errors.password : undefined}
+              secureTextEntry={!showPassowrd}
+              inputStyle={{color: '#fff'}}
+              rightIcon={
+                <TouchableOpacity
+                  onPress={() => setShowPassowrd(!showPassowrd)}>
+                  <Icon
+                    name={showPassowrd ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color={'rgba(255,255,255,.5)'}
+                  />
+                </TouchableOpacity>
+              }
             />
             {/* 
                 el touched lo agregamos porque sino, cuando cambia cualquiera de los inputs,
