@@ -1,37 +1,31 @@
 import React from 'react';
 import {
   KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
 import ReactLogo from '../components/ReactLogo';
 import RegisterForm from '../components/RegisterForm';
 
 const Register = () => {
-  const {height} = useWindowDimensions();
   return (
-    //tambien se puede dejar el KeyboardAvoidingView pero
-    //pongo esto para cambar y comparar
-    <ScrollView
+    //Tambien en lugar de un KeyboardAvoidingView podemos usar un ScrollView
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{
-        height,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#7472F3',
       }}>
-      <View
-        style={{
-          height,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <ReactLogo />
-        <Text style={styles.title}>Register</Text>
-
-        <RegisterForm />
-      </View>
-    </ScrollView>
+      <ReactLogo title="Register" />
+      <RegisterForm />
+    </KeyboardAvoidingView>
   );
 };
 

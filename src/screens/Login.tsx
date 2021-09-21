@@ -23,8 +23,7 @@ const Login = ({navigation}: Props) => {
         enabled
         style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ReactLogo />
-        <Text style={styles.title}>Login</Text>
+        <ReactLogo title="Login" />
         <LoginForm />
       </KeyboardAvoidingView>
     </>
@@ -39,11 +38,5 @@ const styles = StyleSheet.create({
     marginRight: 15,
     fontWeight: '300',
     fontSize: 12,
-  },
-  title: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 25,
-    marginVertical: 10,
   },
 });

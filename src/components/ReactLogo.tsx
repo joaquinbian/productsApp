@@ -1,12 +1,18 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 
-const ReactLogo = () => {
+interface Props {
+  title?: string;
+}
+const ReactLogo = ({title}: Props) => {
   return (
-    <Image
-      source={require('../assets/react-logo-white.png')}
-      style={styles.img}
-    />
+    <View style={{alignItems: 'center'}}>
+      <Image
+        source={require('../assets/react-logo-white.png')}
+        style={styles.img}
+      />
+      {title && <Text style={styles.title}>{title}</Text>}
+    </View>
   );
 };
 
@@ -16,5 +22,11 @@ const styles = StyleSheet.create({
   img: {
     height: 100,
     width: 110,
+  },
+  title: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 25,
+    marginVertical: 5,
   },
 });
