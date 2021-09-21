@@ -35,13 +35,10 @@ const LoginForm = () => {
       onSubmit={values => console.log(values)}
       validationSchema={loginSchema}>
       {({handleSubmit, handleChange, errors, isValid, handleBlur, touched}) => {
-        // console.log(touched.email, 'soy el touched');
-        console.log(isValid);
-
         return (
           <View
             style={{
-              width: width * 0.7,
+              width: width * 0.8,
             }}>
             <Input
               placeholder="email"
@@ -53,6 +50,7 @@ const LoginForm = () => {
               inputContainerStyle={styles.inputStyle}
               errorMessage={touched.email ? errors.email : undefined}
               inputStyle={{color: '#fff'}}
+              keyboardType="email-address"
             />
 
             <Input
@@ -68,7 +66,8 @@ const LoginForm = () => {
               inputStyle={{color: '#fff'}}
               rightIcon={
                 <TouchableOpacity
-                  onPress={() => setShowPassowrd(!showPassowrd)}>
+                  onPress={() => setShowPassowrd(!showPassowrd)}
+                  activeOpacity={0.8}>
                   <Icon
                     name={showPassowrd ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
@@ -82,7 +81,20 @@ const LoginForm = () => {
                 se ejecuta la validacion de este igual aunque no estemos aca y se muestra el
                 error, y no queda lindo
             */}
-            <Button title="submit" onPress={handleSubmit} disabled={!isValid} />
+
+            <Button
+              title="submit"
+              onPress={handleSubmit}
+              disabled={!isValid}
+              buttonStyle={{width: '70%', alignSelf: 'center'}}
+              //   containerStyle={{marginTop: 15}}
+            />
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={{marginTop: 10}}
+              onPress={() => console.log('hola')}>
+              <Text style={styles.newAccountLink}>New account</Text>
+            </TouchableOpacity>
           </View>
         );
       }}
@@ -98,5 +110,11 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     color: '#fff',
+  },
+  newAccountLink: {
+    alignSelf: 'flex-end',
+    marginRight: 15,
+    fontWeight: '300',
+    fontSize: 12,
   },
 });
