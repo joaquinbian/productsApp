@@ -40,6 +40,7 @@ const LoginForm = () => {
   const {width} = useWindowDimensions();
 
   //esta configuracion la hice para poder usar el replace
+
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
 
   const onSubmit = (values: initialValues) => {
