@@ -1,8 +1,9 @@
-import React, {useContext, useState} from 'react';
-import {StyleSheet, Text, useWindowDimensions, View, TouchableOpacity, Keyboard} from 'react-native';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {StyleSheet, Text, useWindowDimensions, View, TouchableOpacity, Keyboard, Alert} from 'react-native';
 import {Formik} from 'formik';
 import {Input, Button} from 'react-native-elements';
 import * as yup from 'yup';
+import Toast, {ToastShowOptions} from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -16,12 +17,26 @@ export interface initialValues {
 
 const LoginForm = () => {
   const [showPassowrd, setShowPassowrd] = useState(false);
-  const {signIn} = useContext(AuthContext);
+  const {signIn, state, removeError} = useContext(AuthContext);
+  const {errorMessage} = state;
+
+  const toast = useRef<ToastShowOptions>();
+  const {width} = useWindowDimensions();
+  const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
 
   const initialValues: initialValues = {
     email: '',
     password: '',
   };
+
+  useEffect(() => {
+    if (errorMessage.length === 0) return;
+    else {
+      console.log('me deberia ejecutar');
+      Alert.alert('Error doing login', 'Please try again', [{text: 'Ok', onPress: removeError}]);
+    }
+  }, [errorMessage]);
+
   const loginSchema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup
@@ -29,11 +44,8 @@ const LoginForm = () => {
       .min(6, ({min}: {min: number}) => `Password must have at least ${min} characters`)
       .required(),
   });
-  const {width} = useWindowDimensions();
 
   //esta configuracion la hice para poder usar el replace
-
-  const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
 
   const onSubmit = (values: initialValues) => {
     const validData = {
@@ -52,6 +64,7 @@ const LoginForm = () => {
             style={{
               width: width * 0.8,
             }}>
+            {/* {errorMessage.length && <Toast ref={ref => Toast.setRef(ref)} />} */}
             <Input
               placeholder="email"
               placeholderTextColor="#rgba(255,255,255,0.5)"

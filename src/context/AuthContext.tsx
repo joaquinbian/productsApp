@@ -32,7 +32,9 @@ export const AuthContext = createContext({} as AuthContextType);
 const AuthProvider = ({children}: Props) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-  const removeError = () => {};
+  const removeError = () => {
+    dispatch({type: 'removeError'});
+  };
 
   const signIn = async ({correo, password}: LoginData) => {
     // console.log(validData);
@@ -41,9 +43,10 @@ const AuthProvider = ({children}: Props) => {
       const response = await productsApi.post<LoginResponse>('/auth/login', {correo, password});
       // console.log(response.data, 'soy la response');
       const {token, usuario} = response.data;
+
       dispatch({type: 'signUp', payload: {user: usuario, token}});
     } catch (err) {
-      console.log({err}, 'soy el err');
+      dispatch({type: 'addError', payload: 'error doing login'});
     }
   };
 

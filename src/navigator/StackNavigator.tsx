@@ -18,7 +18,8 @@ const StackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {/* mostramos condicionalemente las pantallas dependiendo
-          del estado del usuario
+          del estado del usuario, entonces cuando el usuario
+          esta autenticado, es como que no existen esas rutas
       */}
       {status !== 'authenticated' ? (
         <>
