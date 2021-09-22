@@ -16,7 +16,7 @@ export const authReducer = (state: AuthState, action: ActionType): AuthState => 
         errorMessage: action.payload,
         user: null,
         token: null,
-        status: 'not-authorized',
+        status: 'not-authenticated',
       };
     case 'removeError':
       return {
@@ -30,7 +30,7 @@ export const authReducer = (state: AuthState, action: ActionType): AuthState => 
         errorMessage: '', //por si había un error
         user,
         token,
-        status: 'authorized',
+        status: 'authenticated',
       };
     case 'notAuthenticated': //como hace lo mismo que el logout, lo dejamos así
     // indicandole que hagan lo mismo
@@ -39,7 +39,7 @@ export const authReducer = (state: AuthState, action: ActionType): AuthState => 
         ...state,
         user: null,
         token: null,
-        status: 'not-authorized',
+        status: 'not-authenticated',
       };
     default:
       return state;

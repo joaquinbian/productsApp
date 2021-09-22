@@ -11,7 +11,7 @@ export interface AuthState {
   errorMessage: string;
   user: Usuario | null;
   token: string | null;
-  status: 'checking' | 'authorized' | 'not-authorized'; //cuando estemos viendo el token
+  status: 'checking' | 'authenticated' | 'not-authenticated'; //cuando estemos viendo el token
 }
 const initialAuthState: AuthState = {
   errorMessage: '',
@@ -39,9 +39,11 @@ const AuthProvider = ({children}: Props) => {
 
     try {
       const response = await productsApi.post<LoginResponse>('/auth/login', {correo, password});
-      console.log(response.data, 'soy la response');
+      // console.log(response.data, 'soy la response');
+      const {token, usuario} = response.data;
+      dispatch({type: 'signUp', payload: {user: usuario, token}});
     } catch (err) {
-      console.log({err});
+      console.log({err}, 'soy el err');
     }
   };
 
