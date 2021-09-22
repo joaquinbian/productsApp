@@ -1,21 +1,15 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  useWindowDimensions,
-  Keyboard,
-} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, useWindowDimensions, Keyboard} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '../navigator/StackNavigator';
 import {Input, Button} from 'react-native-elements';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {AuthContext} from '../context/AuthContext';
 
-interface initialValues {
+export interface initialValues {
   email: string;
   password: string;
   name: string;
@@ -23,6 +17,7 @@ interface initialValues {
 
 const RegisterForm = () => {
   const [showPassowrd, setShowPassowrd] = useState(false);
+  const {signIn} = useContext(AuthContext);
   const initialValues: initialValues = {
     email: '',
     password: '',
@@ -33,11 +28,7 @@ const RegisterForm = () => {
     email: yup.string().email().required(),
     password: yup
       .string()
-      .min(
-        6,
-        ({min}: {min: number}) =>
-          `Password must have at least ${min} characters`,
-      )
+      .min(6, ({min}: {min: number}) => `Password must have at least ${min} characters`)
       .required(),
     name: yup
       .string()
@@ -52,14 +43,12 @@ const RegisterForm = () => {
 
   const onSubmit = (values: initialValues) => {
     console.log(values);
+    // signIn(values);
     Keyboard.dismiss();
-    navigation.replace('Home');
+    // navigation.replace('Home');
   };
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={values => onSubmit(values)}
-      validationSchema={loginSchema}>
+    <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)} validationSchema={loginSchema}>
       {({handleSubmit, handleChange, errors, isValid, handleBlur, touched}) => {
         return (
           <View
@@ -102,9 +91,7 @@ const RegisterForm = () => {
               secureTextEntry={!showPassowrd}
               inputStyle={{color: '#fff'}}
               rightIcon={
-                <TouchableOpacity
-                  onPress={() => setShowPassowrd(!showPassowrd)}
-                  activeOpacity={0.8}>
+                <TouchableOpacity onPress={() => setShowPassowrd(!showPassowrd)} activeOpacity={0.8}>
                   <Icon
                     name={showPassowrd ? 'eye-off-outline' : 'eye-outline'}
                     size={20}

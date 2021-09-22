@@ -18,7 +18,29 @@ export const authReducer = (state: AuthState, action: ActionType): AuthState => 
         token: null,
         status: 'not-authorized',
       };
-
+    case 'removeError':
+      return {
+        ...state,
+        errorMessage: '',
+      };
+    case 'signUp':
+      const {token, user} = action.payload;
+      return {
+        ...state,
+        errorMessage: '', //por si había un error
+        user,
+        token,
+        status: 'authorized',
+      };
+    case 'notAuthenticated': //como hace lo mismo que el logout, lo dejamos así
+    // indicandole que hagan lo mismo
+    case 'logOut':
+      return {
+        ...state,
+        user: null,
+        token: null,
+        status: 'not-authorized',
+      };
     default:
       return state;
   }

@@ -1,12 +1,5 @@
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-  TouchableOpacity,
-  Keyboard,
-} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, Text, useWindowDimensions, View, TouchableOpacity, Keyboard} from 'react-native';
 import {Formik} from 'formik';
 import {Input, Button} from 'react-native-elements';
 import * as yup from 'yup';
@@ -14,14 +7,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '../navigator/StackNavigator';
+import {AuthContext} from '../context/AuthContext';
 
-interface initialValues {
+export interface initialValues {
   email: string;
   password: string;
 }
 
 const LoginForm = () => {
   const [showPassowrd, setShowPassowrd] = useState(false);
+  const {signIn} = useContext(AuthContext);
+
   const initialValues: initialValues = {
     email: '',
     password: '',
@@ -30,11 +26,7 @@ const LoginForm = () => {
     email: yup.string().email().required(),
     password: yup
       .string()
-      .min(
-        6,
-        ({min}: {min: number}) =>
-          `Password must have at least ${min} characters`,
-      )
+      .min(6, ({min}: {min: number}) => `Password must have at least ${min} characters`)
       .required(),
   });
   const {width} = useWindowDimensions();
@@ -44,15 +36,16 @@ const LoginForm = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
 
   const onSubmit = (values: initialValues) => {
-    console.log(values);
+    const validData = {
+      correo: values.email,
+      password: values.password,
+    };
+    signIn(validData);
     Keyboard.dismiss();
-    navigation.replace('Home');
+    // navigation.replace('Home');
   };
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={values => onSubmit(values)}
-      validationSchema={loginSchema}>
+    <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)} validationSchema={loginSchema}>
       {({handleSubmit, handleChange, errors, isValid, handleBlur, touched}) => {
         return (
           <View
@@ -84,9 +77,7 @@ const LoginForm = () => {
               secureTextEntry={!showPassowrd}
               inputStyle={{color: '#fff'}}
               rightIcon={
-                <TouchableOpacity
-                  onPress={() => setShowPassowrd(!showPassowrd)}
-                  activeOpacity={0.8}>
+                <TouchableOpacity onPress={() => setShowPassowrd(!showPassowrd)} activeOpacity={0.8}>
                   <Icon
                     name={showPassowrd ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
