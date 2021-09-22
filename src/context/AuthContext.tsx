@@ -4,11 +4,16 @@ import {Usuario} from '../interfaces/authInterface';
 interface Props {
   children: JSX.Element | JSX.Element[];
 }
-type AuthContextType = {
+
+export interface AuthState {
   errorMessage: string;
   user: Usuario | null;
   token: string | null;
   status: 'checking' | 'authorized' | 'not-authorized'; //cuando estemos viendo el token
+}
+
+type AuthContextType = {
+  state: AuthState;
   removeError: () => void;
   signIn: () => void;
   signUp: () => void;
