@@ -41,7 +41,7 @@ const AuthProvider = ({children}: Props) => {
 
     try {
       const response = await productsApi.post<LoginResponse>('/auth/login', {correo, password});
-      // console.log(response.data, 'soy la response');
+      console.log(response.data, 'soy la response');
       const {token, usuario} = response.data;
 
       dispatch({type: 'signUp', payload: {user: usuario, token}});
