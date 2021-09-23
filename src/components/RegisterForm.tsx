@@ -17,7 +17,7 @@ export interface initialValues {
 
 const RegisterForm = () => {
   const [showPassowrd, setShowPassowrd] = useState(false);
-  const {signIn} = useContext(AuthContext);
+  const {signUp} = useContext(AuthContext);
   const initialValues: initialValues = {
     email: '',
     password: '',
@@ -32,7 +32,7 @@ const RegisterForm = () => {
       .required(),
     name: yup
       .string()
-      .min(8, min => `Name must have at least ${min} characters`)
+      .min(7, ({min}) => `Name must have at least ${min} characters`)
       .required(),
   });
   const {width} = useWindowDimensions();
@@ -43,7 +43,13 @@ const RegisterForm = () => {
 
   const onSubmit = (values: initialValues) => {
     console.log(values);
+    const validData = {
+      nombre: values.name,
+      correo: values.email,
+      password: values.password,
+    };
     // signIn(values);
+    signUp(validData);
     Keyboard.dismiss();
     // navigation.replace('Home');
   };

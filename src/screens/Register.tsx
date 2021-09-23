@@ -1,12 +1,5 @@
-import React from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {KeyboardAvoidingView, Platform, StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
 import ReactLogo from '../components/ReactLogo';
@@ -15,9 +8,28 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '../navigator/StackNavigator';
+import Toast from 'react-native-toast-message';
+import {AuthContext} from '../context/AuthContext';
 
 const Register = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
+  const {
+    state: {errorMessage},
+    removeError,
+  } = useContext(AuthContext);
+  useEffect(() => {
+    if (errorMessage.length === 0) return;
+    else {
+      Toast.show({
+        type: 'error',
+        text1: errorMessage,
+        text2: 'please try again',
+        position: 'top',
+        visibilityTime: 1500,
+        onHide: removeError,
+      });
+    }
+  }, [errorMessage]);
   return (
     //Tambien en lugar de un KeyboardAvoidingView podemos usar un ScrollView
 
@@ -29,6 +41,7 @@ const Register = () => {
         alignItems: 'center',
         backgroundColor: '#7472F3',
       }}>
+      <Toast ref={ref => Toast.setRef(ref)} />
       <Button
         title="Back"
         containerStyle={{

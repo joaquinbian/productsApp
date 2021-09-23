@@ -3,6 +3,7 @@ import {Usuario, LoginResponse, LoginData} from '../interfaces/authInterface';
 import {authReducer} from './AuthReducer';
 import productsApi from '../api/productsApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginForm from '../components/LoginForm';
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -24,7 +25,7 @@ type AuthContextType = {
   state: AuthState;
   removeError: () => void;
   signIn: (values: LoginData) => void;
-  signUp: () => void;
+  signUp: (values: LoginData) => void;
   logIn: () => void;
   logOut: () => void;
 };
@@ -80,8 +81,17 @@ const AuthProvider = ({children}: Props) => {
     }
   };
 
-  const signUp = () => {};
+  const signUp = async ({correo, password, nombre}: LoginData) => {
+    try {
+      const response = await productsApi.post('/usuarios', {correo, password, nombre});
+      console.log(response.data);
+    } catch (error) {
+      dispatch({type: 'addError', payload: 'error while register user'});
+    }
+  };
+
   const logIn = () => {};
+
   const logOut = async () => {
     //removemos el token
     await AsyncStorage.removeItem('token');
