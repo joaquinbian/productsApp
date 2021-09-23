@@ -26,6 +26,7 @@ type AuthContextType = {
   signIn: (values: LoginData) => void;
   signUp: () => void;
   logIn: () => void;
+  logOut: () => void;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -51,7 +52,7 @@ const AuthProvider = ({children}: Props) => {
           type: 'signUp',
           payload: {
             user: response.data.usuario,
-            token: response.data.token,
+            token: response.data.token, //este token es un token nuevo, no es el token anterior
           },
         });
       }
@@ -81,12 +82,19 @@ const AuthProvider = ({children}: Props) => {
 
   const signUp = () => {};
   const logIn = () => {};
+  const logOut = async () => {
+    //removemos el token
+    await AsyncStorage.removeItem('token');
+    //luego hacemos el logout
+    dispatch({type: 'logOut'});
+  };
   const data: AuthContextType = {
     state,
     removeError,
     signIn,
     signUp,
     logIn,
+    logOut,
   };
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;
 };
