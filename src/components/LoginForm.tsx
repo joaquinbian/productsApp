@@ -43,6 +43,8 @@ const LoginForm = () => {
       password: values.password,
     };
 
+    console.log(validData);
+
     //si puede hacer el login, automaticamente "navega"
     //por la condicion que hicimos en el reducer, elimina
     //este screen y el del register

@@ -1,7 +1,8 @@
-import React, {createContext, useReducer} from 'react';
+import React, {createContext, useEffect, useReducer} from 'react';
 import {Usuario, LoginResponse, LoginData} from '../interfaces/authInterface';
 import {authReducer} from './AuthReducer';
 import productsApi from '../api/productsApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -32,6 +33,33 @@ export const AuthContext = createContext({} as AuthContextType);
 const AuthProvider = ({children}: Props) => {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  const checkToken = async () => {
+    const token = await AsyncStorage.getItem('token');
+    console.log(token);
+
+    if (!token) return dispatch({type: 'notAuthenticated'});
+
+    try {
+      const response = await productsApi.get<LoginResponse>('/auth/');
+      if (response.status !== 200) return dispatch({type: 'notAuthenticated'});
+      else {
+        return dispatch({
+          type: 'signUp',
+          payload: {
+            user: response.data.usuario,
+            token: response.data.token,
+          },
+        });
+      }
+    } catch (error) {
+      console.log({error});
+    }
+  };
+
   const removeError = () => {
     dispatch({type: 'removeError'});
   };
@@ -45,6 +73,7 @@ const AuthProvider = ({children}: Props) => {
       const {token, usuario} = response.data;
 
       dispatch({type: 'signUp', payload: {user: usuario, token}});
+      await AsyncStorage.setItem('token', token);
     } catch (err) {
       dispatch({type: 'addError', payload: 'error doing login'});
     }
