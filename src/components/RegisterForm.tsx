@@ -50,8 +50,8 @@ const RegisterForm = () => {
     };
     // signIn(values);
     signUp(validData);
+
     Keyboard.dismiss();
-    // navigation.replace('Home');
   };
   return (
     <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)} validationSchema={loginSchema}>

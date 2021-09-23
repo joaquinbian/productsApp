@@ -4,6 +4,7 @@ import {authReducer} from './AuthReducer';
 import productsApi from '../api/productsApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginForm from '../components/LoginForm';
+import Toast from 'react-native-toast-message';
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -84,7 +85,14 @@ const AuthProvider = ({children}: Props) => {
   const signUp = async ({correo, password, nombre}: LoginData) => {
     try {
       const response = await productsApi.post('/usuarios', {correo, password, nombre});
-      console.log(response.data);
+
+      Toast.show({
+        type: 'success',
+        text1: 'user registered',
+        position: 'top',
+        visibilityTime: 1500,
+      });
+      return response.data;
     } catch (error) {
       dispatch({type: 'addError', payload: 'error while register user'});
     }
@@ -106,6 +114,11 @@ const AuthProvider = ({children}: Props) => {
     logIn,
     logOut,
   };
-  return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={data}>
+      <Toast ref={ref => Toast.setRef(ref)} />
+      {children}
+    </AuthContext.Provider>
+  );
 };
 export default AuthProvider;
