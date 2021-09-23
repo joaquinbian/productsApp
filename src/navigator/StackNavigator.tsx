@@ -4,6 +4,7 @@ import React, {useContext} from 'react';
 import Home from '../screens/Home';
 import Register from '../screens/Register';
 import {AuthContext} from '../context/AuthContext';
+import LoadingScreen from '../screens/LoadingScreen';
 
 export type RootStackParams = {
   Login: undefined;
@@ -15,19 +16,22 @@ const StackNavigator = () => {
   const {state} = useContext(AuthContext);
   const {status} = state;
 
+  if (status === 'checking') return <LoadingScreen />;
+
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {/* mostramos condicionalemente las pantallas dependiendo
           del estado del usuario, entonces cuando el usuario
           esta autenticado, es como que no existen esas rutas
       */}
-      {status !== 'authenticated' ? (
+
+      {status === 'authenticated' ? (
+        <Stack.Screen name="Home" component={Home} />
+      ) : (
         <>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
         </>
-      ) : (
-        <Stack.Screen name="Home" component={Home} />
       )}
     </Stack.Navigator>
   );
