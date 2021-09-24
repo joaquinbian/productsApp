@@ -67,7 +67,7 @@ const AuthProvider = ({children}: Props) => {
   };
 
   const removeMsg = () => {
-    dispatch({type: 'removeMsg'});
+    dispatch({type: 'removeMsg', payload: {type: undefined, message: ''}});
   };
 
   const signIn = async ({correo, password}: LoginData) => {
@@ -95,8 +95,11 @@ const AuthProvider = ({children}: Props) => {
         dispatch({type: 'signUp', payload: {user: usuario, token}});
       }, 2000);
     } catch (error) {
-      // return dispatch({type: 'addError', payload: 'error while register user'});
-      return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error registering user'}});
+      if (error.response.status === 400) {
+        return dispatch({type: 'addMsg', payload: {type: 'error', message: 'this mail is already in use'}});
+      } else {
+        return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error doing login'}});
+      }
     }
   };
 

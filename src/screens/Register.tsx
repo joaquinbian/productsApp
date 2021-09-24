@@ -15,29 +15,25 @@ const Register = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
   const {state, removeMsg} = useContext(AuthContext);
   const {message} = state;
-  const isMounted = useRef<boolean>(true);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    removeMsg();
+  }, []);
 
   useEffect(() => {
-    console.log('entreeeeee');
-
-    if (isMounted.current) {
-      if (!message.type) return;
-      Toast.show({
-        type: message.type,
-        text1: message.message,
-        visibilityTime: 1000,
-        position: 'top',
-        // onHide: removeMsg, //dependiendo del tiempo que aparezca
-        //esto me provocaba un error de cambiar un estado
-        //en un componente desmontado
-      });
+    if (isMounted) {
+      if (message.type) {
+        Toast.show({
+          type: message.type,
+          text1: message.message,
+          visibilityTime: 1000,
+          onHide: removeMsg,
+        });
+      }
     }
     return () => {
-      console.log('se desmonta brother');
-
       isMounted.current = false;
-      removeMsg(); //cuando el componente se desmonte,
-      //que elimine el mensaje
+      removeMsg();
     };
   }, [message.message]);
   return (
@@ -52,6 +48,7 @@ const Register = () => {
         backgroundColor: '#7472F3',
       }}>
       <Toast ref={ref => Toast.setRef(ref)} />
+
       <Button
         title="Back"
         containerStyle={{
@@ -61,6 +58,7 @@ const Register = () => {
           top: 10,
           left: 15,
         }}
+        // disabled={!message.type ? false : true}
         buttonStyle={{backgroundColor: '#fff'}}
         titleStyle={{marginHorizontal: 5, color: '#4F4CF9'}}
         icon={<Icon name="chevron-back-outline" size={20} color="#4F4CF9" />}

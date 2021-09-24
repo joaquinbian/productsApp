@@ -4,7 +4,7 @@ import {AuthState, Message} from './AuthContext';
 type ActionType =
   | {type: 'signUp'; payload: {token: string; user: Usuario}}
   | {type: 'addMsg'; payload: Message}
-  | {type: 'removeMsg'}
+  | {type: 'removeMsg'; payload: Message}
   | {type: 'notAuthenticated'}
   | {type: 'logOut'};
 
@@ -20,9 +20,11 @@ export const authReducer = (state: AuthState, action: ActionType): AuthState => 
         status: 'not-authenticated',
       };
     case 'removeMsg':
+      console.log('me ejecutoooo');
+
       return {
         ...state,
-        message: {type: undefined, message: ''}, //acá sacamos el mensaje, para que quede limpio
+        message: action.payload, //acá sacamos el mensaje, para que quede limpio
       };
     case 'signUp':
       const {token, user} = action.payload;

@@ -12,24 +12,32 @@ const Login = ({navigation}: Props) => {
   const {height, width} = useWindowDimensions();
   const {state, removeMsg} = useContext(AuthContext);
   const {message} = state;
+  const isMounted = useRef(true);
+  useEffect(() => {
+    removeMsg();
+  }, []);
 
   useEffect(() => {
-    if (!message.type) return;
-    else {
-      Toast.show({
-        type: message.type,
-        text1: message.message,
-        text2: 'please try again',
-        position: 'top',
-        onHide: removeMsg,
-        visibilityTime: 1500,
-      });
+    if (isMounted) {
+      if (message.type) {
+        Toast.show({
+          type: message.type,
+          text1: message.message,
+          visibilityTime: 1000,
+          onHide: removeMsg,
+        });
+      }
     }
+    return () => {
+      isMounted.current = false;
+
+      removeMsg();
+    };
   }, [message.message]);
 
   return (
     <>
-      <Toast ref={ref => Toast.setRef(ref)} />
+      {isMounted && <Toast ref={ref => Toast.setRef(ref)} />}
       <Background />
       <KeyboardAvoidingView
         enabled
