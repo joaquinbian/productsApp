@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useRef} from 'react';
 import {KeyboardAvoidingView, Platform, StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -15,15 +15,21 @@ const Register = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
   const {state, removeMsg} = useContext(AuthContext);
   const {message} = state;
+  const isMounted = useRef<boolean>(true);
 
   useEffect(() => {
+    console.log('entreeeeee');
+
+    // if (isMounted.current) {
     if (!message.type) return;
     Toast.show({
       type: message.type,
       text1: message.message,
-      visibilityTime: 1500,
+      visibilityTime: 1000,
       position: 'top',
-      onHide: removeMsg,
+      onHide: removeMsg, //dependiendo del tiempo que aparezca
+      //esto me provocaba un error de cambiar un estado
+      //en un componente desmontado
     });
   }, [message.message]);
   return (
