@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {KeyboardAvoidingView, Platform, StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import {Button} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -15,24 +15,27 @@ const Register = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
   const {state, removeMsg} = useContext(AuthContext);
   const {message} = state;
-  const isMounted = useRef(true);
-  useEffect(() => {
+  const [isShowButton, setIsShowButton] = useState(true);
+
+  const showButton = () => {
+    setIsShowButton(false);
+  };
+  const setRemoveMsg = () => {
     removeMsg();
-  }, []);
+    setIsShowButton(true);
+  };
 
   useEffect(() => {
-    if (isMounted) {
-      if (message.type) {
-        Toast.show({
-          type: message.type,
-          text1: message.message,
-          visibilityTime: 1000,
-          onHide: removeMsg,
-        });
-      }
+    if (message.type) {
+      Toast.show({
+        type: message.type,
+        text1: message.message,
+        visibilityTime: 1000,
+        onHide: setRemoveMsg,
+        onShow: showButton,
+      });
     }
     return () => {
-      isMounted.current = false;
       removeMsg();
     };
   }, [message.message]);
@@ -54,10 +57,11 @@ const Register = () => {
         containerStyle={{
           position: 'absolute',
           backgroundColor: 'red',
-          zIndex: 1000,
+          zIndex: -1000,
           top: 10,
           left: 15,
         }}
+        disabled={!isShowButton}
         // disabled={!message.type ? false : true}
         buttonStyle={{backgroundColor: '#fff'}}
         titleStyle={{marginHorizontal: 5, color: '#4F4CF9'}}

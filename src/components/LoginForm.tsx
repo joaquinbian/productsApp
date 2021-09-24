@@ -106,12 +106,12 @@ const LoginForm = () => {
                 disabled={!isValid}
                 buttonStyle={{width: '70%', alignSelf: 'center'}}
               />
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 activeOpacity={0.8}
                 style={{marginTop: 10}}
                 onPress={() => navigation.replace('Register')}>
                 <Text style={styles.newAccountLink}>New account</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           );
         }}
