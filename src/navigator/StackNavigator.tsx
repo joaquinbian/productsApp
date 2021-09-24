@@ -5,11 +5,13 @@ import Home from '../screens/Home';
 import Register from '../screens/Register';
 import {AuthContext} from '../context/AuthContext';
 import LoadingScreen from '../screens/LoadingScreen';
+import ProductsNavigator from './ProductsNavigator';
 
 export type RootStackParams = {
   Login: undefined;
   Home: undefined;
   Register: undefined;
+  ProductsStack: undefined;
 };
 const StackNavigator = () => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -26,7 +28,10 @@ const StackNavigator = () => {
       */}
 
       {status === 'authenticated' ? (
-        <Stack.Screen name="Home" component={Home} />
+        <>
+          <Stack.Screen name="ProductsStack" component={ProductsNavigator} />
+          <Stack.Screen name="Home" component={Home} />
+        </>
       ) : (
         <>
           <Stack.Screen name="Login" component={Login} />
