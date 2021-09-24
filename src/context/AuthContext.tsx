@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useReducer} from 'react';
-import {Usuario, LoginResponse, LoginData} from '../interfaces/authInterface';
+import {Usuario, LoginResponse, LoginData, RegisterData} from '../interfaces/authInterface';
 import {authReducer} from './AuthReducer';
 import productsApi from '../api/productsApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,24 +9,29 @@ import Toast from 'react-native-toast-message';
 interface Props {
   children: JSX.Element | JSX.Element[];
 }
+type msgType = 'error' | 'success' | undefined;
 
+export interface Message {
+  type: msgType;
+  message: string;
+}
 export interface AuthState {
-  errorMessage: string;
+  message: Message;
   user: Usuario | null;
   token: string | null;
   status: 'checking' | 'authenticated' | 'not-authenticated'; //cuando estemos viendo el token
 }
 const initialAuthState: AuthState = {
-  errorMessage: '',
+  message: {type: undefined, message: ''},
   user: null,
   token: null,
   status: 'checking',
 };
 type AuthContextType = {
   state: AuthState;
-  removeError: () => void;
+  removeMsg: () => void;
   signIn: (values: LoginData) => void;
-  signUp: (values: LoginData) => void;
+  signUp: (values: RegisterData) => void;
   logIn: () => void;
   logOut: () => void;
 };
@@ -43,7 +48,6 @@ const AuthProvider = ({children}: Props) => {
   const checkToken = async () => {
     const token = await AsyncStorage.getItem('token');
     console.log(token);
-
     if (!token) return dispatch({type: 'notAuthenticated'});
 
     try {
@@ -63,8 +67,8 @@ const AuthProvider = ({children}: Props) => {
     }
   };
 
-  const removeError = () => {
-    dispatch({type: 'removeError'});
+  const removeMsg = () => {
+    dispatch({type: 'removeMsg'});
   };
 
   const signIn = async ({correo, password}: LoginData) => {
@@ -78,23 +82,22 @@ const AuthProvider = ({children}: Props) => {
       dispatch({type: 'signUp', payload: {user: usuario, token}});
       await AsyncStorage.setItem('token', token);
     } catch (err) {
-      dispatch({type: 'addError', payload: 'error doing login'});
+      // return dispatch({type: 'addError', payload: 'error doing login'});
+      return dispatch({type: 'addMsg', payload: {type: 'error', message: 'eror doing login'}});
     }
   };
 
-  const signUp = async ({correo, password, nombre}: LoginData) => {
+  const signUp = async ({correo, password, nombre}: RegisterData) => {
     try {
-      const response = await productsApi.post('/usuarios', {correo, password, nombre});
-
-      Toast.show({
-        type: 'success',
-        text1: 'user registered',
-        position: 'top',
-        visibilityTime: 1500,
-      });
-      return response.data;
+      const response = await productsApi.post<LoginResponse>('/usuarios', {correo, password, nombre});
+      const {token, usuario} = response.data;
+      dispatch({type: 'addMsg', payload: {type: 'success', message: 'user registered'}});
+      setTimeout(() => {
+        dispatch({type: 'signUp', payload: {user: usuario, token}});
+      }, 2000);
     } catch (error) {
-      dispatch({type: 'addError', payload: 'error while register user'});
+      // return dispatch({type: 'addError', payload: 'error while register user'});
+      return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error registering user'}});
     }
   };
 
@@ -108,7 +111,7 @@ const AuthProvider = ({children}: Props) => {
   };
   const data: AuthContextType = {
     state,
-    removeError,
+    removeMsg,
     signIn,
     signUp,
     logIn,

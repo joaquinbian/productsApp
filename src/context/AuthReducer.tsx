@@ -1,33 +1,33 @@
 import {Usuario} from '../interfaces/authInterface';
-import {AuthState} from './AuthContext';
+import {AuthState, Message} from './AuthContext';
 
 type ActionType =
   | {type: 'signUp'; payload: {token: string; user: Usuario}}
-  | {type: 'addError'; payload: string}
-  | {type: 'removeError'}
+  | {type: 'addMsg'; payload: Message}
+  | {type: 'removeMsg'}
   | {type: 'notAuthenticated'}
   | {type: 'logOut'};
 
 export const authReducer = (state: AuthState, action: ActionType): AuthState => {
   switch (action.type) {
-    case 'addError':
+    case 'addMsg':
       return {
         ...state,
-        errorMessage: action.payload,
+        // errorMessage: action.payload,
+        message: action.payload,
         user: null,
         token: null,
         status: 'not-authenticated',
       };
-    case 'removeError':
+    case 'removeMsg':
       return {
         ...state,
-        errorMessage: '',
+        message: {type: undefined, message: ''}, //acá sacamos el mensaje, para que quede limpio
       };
     case 'signUp':
       const {token, user} = action.payload;
       return {
         ...state,
-        errorMessage: '', //por si había un error
         user,
         token,
         status: 'authenticated',

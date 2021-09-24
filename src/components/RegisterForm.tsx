@@ -8,6 +8,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AuthContext} from '../context/AuthContext';
+import Toast from 'react-native-toast-message';
 
 export interface initialValues {
   email: string;
@@ -50,8 +51,6 @@ const RegisterForm = () => {
     };
     // signIn(values);
     signUp(validData);
-
-    Keyboard.dismiss();
   };
   return (
     <Formik initialValues={initialValues} onSubmit={values => onSubmit(values)} validationSchema={loginSchema}>

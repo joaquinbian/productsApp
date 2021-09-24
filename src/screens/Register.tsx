@@ -13,23 +13,19 @@ import {AuthContext} from '../context/AuthContext';
 
 const Register = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams, any>>();
-  const {
-    state: {errorMessage},
-    removeError,
-  } = useContext(AuthContext);
+  const {state, removeMsg} = useContext(AuthContext);
+  const {message} = state;
+
   useEffect(() => {
-    if (errorMessage.length === 0) return;
-    else {
-      Toast.show({
-        type: 'error',
-        text1: errorMessage,
-        text2: 'please try again',
-        position: 'top',
-        visibilityTime: 1500,
-        onHide: removeError,
-      });
-    }
-  }, [errorMessage]);
+    if (!message.type) return;
+    Toast.show({
+      type: message.type,
+      text1: message.message,
+      visibilityTime: 1500,
+      position: 'top',
+      onHide: removeMsg,
+    });
+  }, [message.message]);
   return (
     //Tambien en lugar de un KeyboardAvoidingView podemos usar un ScrollView
 

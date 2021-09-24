@@ -10,24 +10,22 @@ import {AuthContext} from '../context/AuthContext';
 interface Props extends StackScreenProps<any, any> {}
 const Login = ({navigation}: Props) => {
   const {height, width} = useWindowDimensions();
-  const {
-    state: {errorMessage},
-    removeError,
-  } = useContext(AuthContext);
+  const {state, removeMsg} = useContext(AuthContext);
+  const {message} = state;
 
   useEffect(() => {
-    if (errorMessage.length === 0) return;
+    if (!message.type) return;
     else {
       Toast.show({
-        type: 'error',
-        text1: 'error doing login',
+        type: message.type,
+        text1: message.message,
         text2: 'please try again',
         position: 'top',
-        onHide: removeError,
+        onHide: removeMsg,
         visibilityTime: 1500,
       });
     }
-  }, [errorMessage]);
+  }, [message.message]);
 
   return (
     <>
