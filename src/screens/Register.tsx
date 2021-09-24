@@ -16,13 +16,16 @@ const Register = () => {
   const {state, removeMsg} = useContext(AuthContext);
   const {message} = state;
   const [isShowButton, setIsShowButton] = useState(true);
+  const isMounted = useRef(true);
 
   const showButton = () => {
     setIsShowButton(false);
   };
   const setRemoveMsg = () => {
-    removeMsg();
-    setIsShowButton(true);
+    if (isMounted) {
+      removeMsg();
+      setIsShowButton(true);
+    }
   };
 
   useEffect(() => {
@@ -37,6 +40,7 @@ const Register = () => {
     }
     return () => {
       removeMsg();
+      isMounted.current = false;
     };
   }, [message.message]);
   return (
