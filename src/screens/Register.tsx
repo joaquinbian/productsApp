@@ -20,17 +20,25 @@ const Register = () => {
   useEffect(() => {
     console.log('entreeeeee');
 
-    // if (isMounted.current) {
-    if (!message.type) return;
-    Toast.show({
-      type: message.type,
-      text1: message.message,
-      visibilityTime: 1000,
-      position: 'top',
-      onHide: removeMsg, //dependiendo del tiempo que aparezca
-      //esto me provocaba un error de cambiar un estado
-      //en un componente desmontado
-    });
+    if (isMounted.current) {
+      if (!message.type) return;
+      Toast.show({
+        type: message.type,
+        text1: message.message,
+        visibilityTime: 1000,
+        position: 'top',
+        // onHide: removeMsg, //dependiendo del tiempo que aparezca
+        //esto me provocaba un error de cambiar un estado
+        //en un componente desmontado
+      });
+    }
+    return () => {
+      console.log('se desmonta brother');
+
+      isMounted.current = false;
+      removeMsg(); //cuando el componente se desmonte,
+      //que elimine el mensaje
+    };
   }, [message.message]);
   return (
     //Tambien en lugar de un KeyboardAvoidingView podemos usar un ScrollView

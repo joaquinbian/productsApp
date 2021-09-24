@@ -32,7 +32,6 @@ type AuthContextType = {
   removeMsg: () => void;
   signIn: (values: LoginData) => void;
   signUp: (values: RegisterData) => void;
-  logIn: () => void;
   logOut: () => void;
 };
 
@@ -94,7 +93,7 @@ const AuthProvider = ({children}: Props) => {
       dispatch({type: 'addMsg', payload: {type: 'success', message: 'user registered'}});
       setTimeout(() => {
         dispatch({type: 'signUp', payload: {user: usuario, token}});
-      }, 3000);
+      }, 2000);
     } catch (error) {
       // return dispatch({type: 'addError', payload: 'error while register user'});
       return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error registering user'}});
@@ -114,7 +113,6 @@ const AuthProvider = ({children}: Props) => {
     removeMsg,
     signIn,
     signUp,
-    logIn,
     logOut,
   };
   return (
