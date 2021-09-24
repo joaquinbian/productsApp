@@ -10,7 +10,17 @@ export type ProductsStackParams = {
 const ProductsNavigator = () => {
   const Stack = createStackNavigator<ProductsStackParams>();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: {
+          backgroundColor: '#fff',
+        },
+        headerTitleAlign: 'center',
+        headerStyle: {
+          elevation: 0, //para que no se vea la sombrita en android
+          shadowColor: 'transparent', //para que no se vea la sombrita en ios
+        },
+      }}>
       <Stack.Screen name="ProuctsScreen" component={ProductsScreen} options={{title: 'Products'}} />
       <Stack.Screen name="ProductScreen" component={ProductScreen} />
     </Stack.Navigator>
