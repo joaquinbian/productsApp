@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import {useCategories} from '../hooks/useCategories';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {Button, Input} from 'react-native-elements';
@@ -14,30 +14,16 @@ interface Props extends StackScreenProps<ProductsStackParams, 'AddProductScreen'
 
 const AddProductScreen = ({route, navigation}: Props) => {
   const {categories} = useCategories();
-  const {name, id} = route.params;
-  const {loadProductById} = useContext(ProductsContext);
+  //le seteamos estos valores por defectos pq podemos tener problemas con q
+  //vengan undefined
+  const {name = '', id = ''} = route.params;
+  const {loadProductById, addProduct, updateProduct} = useContext(ProductsContext);
   const {_id, nombre, categoriaId, img, onChangeHandler, state, setFormValues} = useForm({
     _id: '',
     nombre: name,
     categoriaId: '',
     img: '',
   });
-
-  const getProduct = async () => {
-    try {
-      const resp = await loadProductById(id!);
-      setFormValues({
-        _id: id || '', //pq puede ser undefined
-        categoriaId: resp.categoria._id,
-        img: resp.img || '', //si pongo el signo de exclamación en lugar de esto, se me rompe
-        //ṕorque dice que img es undefined y en el estado no agrega esta propiedad
-        //si lo dejo asi y no tiene una img, deja un string vacio
-        nombre,
-      });
-    } catch (error) {
-      console.log({error});
-    }
-  };
 
   useEffect(() => {
     if (name) {
@@ -46,10 +32,34 @@ const AddProductScreen = ({route, navigation}: Props) => {
   }, []);
 
   useEffect(() => {
-    getProduct().then(() => {
-      console.log('LA CATEGORIA ES ', categoriaId);
-    });
+    getProduct().then(() => {});
   }, []);
+
+  const getProduct = async () => {
+    try {
+      const resp = await loadProductById(id);
+      setFormValues({
+        _id: id, //pq puede ser undefined
+        categoriaId: resp.categoria._id,
+        img: resp.img || '', //si pongo el signo de exclamación en lugar de esto, se me rompe
+        //ṕorque dice que img es undefined y en el estado no agrega esta propiedad
+        //si lo dejo asi y no tiene una img, deja un string vacio
+        nombre,
+      });
+    } catch (error) {
+      console.log({error}, 'errro');
+    }
+  };
+
+  const saveOrUpdate = async () => {
+    if (id.length) {
+      updateProduct(categoriaId, _id, nombre);
+    } else {
+      const tempCategory = categoriaId || categories[0]._id;
+      const response = await addProduct(tempCategory, nombre);
+      onChangeHandler(response._id, '_id');
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -75,23 +85,30 @@ const AddProductScreen = ({route, navigation}: Props) => {
           ))}
         </Picker>
       </View>
-      <Button title="Save" containerStyle={{marginTop: 10}} buttonStyle={{backgroundColor: '#7472F3'}} />
-      <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-        <Button
-          title="Camera"
-          containerStyle={{marginTop: 10}}
-          buttonStyle={{backgroundColor: '#7472F3'}}
-          iconRight
-          icon={<Icon name="camera-outline" size={20} style={{marginLeft: 10, color: '#fff'}} />}
-        />
-        <Button
-          title="Gallery"
-          containerStyle={{marginTop: 10}}
-          buttonStyle={{backgroundColor: '#7472F3'}}
-          iconRight
-          icon={<Icon name="image-outline" size={20} style={{marginLeft: 10, color: '#fff'}} />}
-        />
-      </View>
+      <Button
+        title="Save"
+        containerStyle={{marginTop: 10}}
+        buttonStyle={{backgroundColor: '#7472F3'}}
+        onPress={saveOrUpdate}
+      />
+      {_id.length > 0 && (
+        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+          <Button
+            title="Camera"
+            containerStyle={{marginTop: 10}}
+            buttonStyle={{backgroundColor: '#7472F3'}}
+            iconRight
+            icon={<Icon name="camera-outline" size={20} style={{marginLeft: 10, color: '#fff'}} />}
+          />
+          <Button
+            title="Gallery"
+            containerStyle={{marginTop: 10}}
+            buttonStyle={{backgroundColor: '#7472F3'}}
+            iconRight
+            icon={<Icon name="image-outline" size={20} style={{marginLeft: 10, color: '#fff'}} />}
+          />
+        </View>
+      )}
       {img.length > 0 && <Image source={{uri: img}} style={{width: 200, height: 200}} />}
       <Text>{JSON.stringify(state, null, 5)}</Text>
     </ScrollView>

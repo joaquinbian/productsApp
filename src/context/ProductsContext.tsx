@@ -9,7 +9,7 @@ interface Props {
 interface ProductsState {
   products: Producto[];
   loadProducts: () => Promise<void>; //promesa que no regresa nada
-  addProduct: (categoryId: string, productName: string) => Promise<void>;
+  addProduct: (categoryId: string, productName: string) => Promise<Producto>;
   updateProduct: (categoryId: string, productId: string, productName: string) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   loadProductById: (id: string) => Promise<Producto>; //es una promesa que resuleve un producto
@@ -35,9 +35,26 @@ const ProductsProvider = ({children}: Props) => {
     setProducts([...response.data.productos]);
   };
 
-  const addProduct = async (categoryId: string, productName: string) => {};
+  const addProduct = async (categoryId: string, productName: string): Promise<Producto> => {
+    const response = await productsApi.post<Producto>('/productos', {
+      categoria: categoryId,
+      nombre: productName,
+    });
+    setProducts([...products, response.data]);
+    return response.data; //para que pueda mostrar los botones de la camara, asi le seteamos el id
+  };
 
-  const updateProduct = async (categoryId: string, productId: string, productName: string) => {};
+  const updateProduct = async (categoryId: string, productId: string, productName: string) => {
+    const response = await productsApi.put<Producto>(`/productos/${productId}`, {
+      categoria: categoryId,
+      nombre: productName,
+    });
+    setProducts(
+      products.map(p => {
+        return p._id === productId ? response.data : p;
+      }),
+    );
+  };
 
   const deleteProduct = async (id: string) => {};
 
