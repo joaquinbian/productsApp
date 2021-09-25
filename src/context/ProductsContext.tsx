@@ -1,12 +1,13 @@
-import React, {createContext, useState} from 'react';
-import {Products} from '../interfaces/authInterface';
+import React, {createContext, useEffect, useState} from 'react';
+import productsApi from '../api/productsApi';
+import {Products, Producto} from '../interfaces/authInterface';
 
 interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
 interface ProductsState {
-  products: Products[];
+  products: Producto[];
   loadProducts: () => Promise<void>; //promesa que no regresa nada
   addProduct: (categoryId: string, productName: string) => Promise<void>;
   updateProduct: (categoryId: string, productId: string, productName: string) => Promise<void>;
@@ -15,12 +16,25 @@ interface ProductsState {
   loadImage: (data: any, id: string) => Promise<void>;
 }
 
-const ProductsContext = createContext({} as ProductsState);
+export const ProductsContext = createContext({} as ProductsState);
 
 const ProductsProvider = ({children}: Props) => {
-  const [products, setProducts] = useState<Products[]>([]);
+  const [products, setProducts] = useState<Producto[]>([]);
 
-  const loadProducts = async () => {};
+  useEffect(() => {
+    console.log('me monto el products');
+
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    const response = await productsApi.get<Products>('/productos?limite=50');
+    //esto lo hacemos asi por si hacemos un lazyload y tenemos que ir cargando
+    //de a poco
+    // setProducts([...products, ...response.data.productos]);
+    setProducts([...response.data.productos]);
+  };
+
   const addProduct = async (categoryId: string, productName: string) => {};
   const updateProduct = async (categoryId: string, productId: string, productName: string) => {};
   const deleteProduct = async (id: string) => {};

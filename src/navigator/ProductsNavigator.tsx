@@ -4,7 +4,7 @@ import ProductsScreen from '../screens/ProductsScreen';
 import ProductScreen from '../screens/ProductScreen';
 
 export type ProductsStackParams = {
-  ProuctsScreen: undefined;
+  ProductsScreen: undefined;
   ProductScreen: {id?: string; name?: string};
 };
 const ProductsNavigator = () => {
@@ -21,7 +21,7 @@ const ProductsNavigator = () => {
           shadowColor: 'transparent', //para que no se vea la sombrita en ios
         },
       }}>
-      <Stack.Screen name="ProuctsScreen" component={ProductsScreen} options={{title: 'Products'}} />
+      <Stack.Screen name="ProductsScreen" component={ProductsScreen} options={{title: 'Products'}} />
       <Stack.Screen name="ProductScreen" component={ProductScreen} />
     </Stack.Navigator>
   );
