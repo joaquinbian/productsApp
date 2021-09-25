@@ -6,6 +6,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {Producto} from '../interfaces/authInterface';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {Button} from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface Props extends StackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 const ProductsScreen = ({navigation}: Props) => {
@@ -18,7 +19,7 @@ const ProductsScreen = ({navigation}: Props) => {
           title="add"
           containerStyle={{marginRight: 10}}
           buttonStyle={{width: 70, height: 40, backgroundColor: '#7472F3'}}
-          onPress={() => navigation.navigate('AddProductScreen')} //el id no me lo pide pq puede ser undefined
+          onPress={() => navigation.navigate('AddProductScreen', {})} //el id no me lo pide pq puede ser undefined
         />
       ),
     });
@@ -30,8 +31,13 @@ const ProductsScreen = ({navigation}: Props) => {
         renderItem={({item}: {item: Producto}) => (
           <TouchableOpacity
             onPress={() => navigation.navigate('ProductScreen', {id: item._id, name: item.nombre})}
-            activeOpacity={0.8}>
+            activeOpacity={0.8}
+            style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text>{item.nombre}</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AddProductScreen', {id: item._id, name: item.nombre})}>
+              <Icon name="create-outline" size={20} style={{marginRight: 10}} />
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
         keyExtractor={item => item._id}

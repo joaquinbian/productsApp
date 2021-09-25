@@ -7,7 +7,7 @@ import AddProductScreen from '../screens/AddProductScreen';
 export type ProductsStackParams = {
   ProductsScreen: undefined;
   ProductScreen: {id?: string; name?: string};
-  AddProductScreen: undefined;
+  AddProductScreen: {id?: string; name?: string};
 };
 const ProductsNavigator = () => {
   const Stack = createStackNavigator<ProductsStackParams>();
