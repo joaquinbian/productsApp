@@ -18,6 +18,7 @@ const ProductsScreen = ({navigation}: Props) => {
           title="add"
           containerStyle={{marginRight: 10}}
           buttonStyle={{width: 70, height: 40, backgroundColor: '#7472F3'}}
+          onPress={() => navigation.navigate('ProductScreen', {name: 'New Product'})} //el id no me lo pide pq puede ser undefined
         />
       ),
     });
