@@ -21,10 +21,21 @@ export const useForm = <T extends Object>(initialState: T) => {
     });
   };
 
+  //el tipo T es el objeto q recibe, osea tiene q ser del mismo tipo
+  const setFormValues = (newData: T) => {
+    //entonces acá podemos cambiar uno o mas valores del estado
+    //pasandoselos todos como parametro a esta funcion
+    setState({
+      ...state,
+      ...newData,
+    });
+  };
+
   return {
     ...state,
     state,
     onChangeHandler,
     onChangeSwitchHandler,
+    setFormValues,
   };
 };

@@ -12,7 +12,7 @@ interface ProductsState {
   addProduct: (categoryId: string, productName: string) => Promise<void>;
   updateProduct: (categoryId: string, productId: string, productName: string) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
-  loadProductById: (id: string) => Promise<Products>;
+  loadProductById: (id: string) => Promise<Producto>; //es una promesa que resuleve un producto
   loadImage: (data: any, id: string) => Promise<void>;
 }
 
@@ -36,10 +36,16 @@ const ProductsProvider = ({children}: Props) => {
   };
 
   const addProduct = async (categoryId: string, productName: string) => {};
+
   const updateProduct = async (categoryId: string, productId: string, productName: string) => {};
+
   const deleteProduct = async (id: string) => {};
-  const loadProductById = async (id: string) => {
-    throw new Error();
+
+  const loadProductById = async (id: string): Promise<Producto> => {
+    const myProduct = await productsApi.get<Producto>(`/productos/${id}`);
+    console.log(myProduct.data, 'aca');
+
+    return myProduct.data;
   };
   const loadImage = async (data: any, id: string) => {};
 
