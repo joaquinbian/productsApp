@@ -12,6 +12,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useForm} from '../hooks/useForm';
 import {ProductsContext} from '../context/ProductsContext';
 import LoadingScreen from './LoadingScreen';
+import Toast from 'react-native-toast-message';
 
 interface Props extends StackScreenProps<ProductsStackParams, 'AddProductScreen'> {}
 
@@ -74,9 +75,21 @@ const AddProductScreen = ({route, navigation}: Props) => {
       // console.log(response.didCancel);
       if (response.didCancel) return;
       if (!response.assets![0].uri) return;
-      setIsLoading(true);
       setTempImg(response.assets![0].uri);
-      console.log(response.assets![0].uri); //esto va a ser lo q le mandamos al backend
+      setIsLoading(true);
+      // console.log(response.assets![0].uri); //esto va a ser lo q le mandamos al backend
+      loadImage(response, _id).then(() => {
+        setIsLoading(false);
+      });
+    });
+  };
+
+  const takePhotoGallery = () => {
+    launchImageLibrary({quality: 0.5, mediaType: 'photo'}, response => {
+      if (response.didCancel) return;
+      if (!response.assets![0].uri) return;
+      setTempImg(response.assets![0].uri);
+      setIsLoading(true);
       loadImage(response, _id).then(() => {
         setIsLoading(false);
       });
@@ -86,6 +99,7 @@ const AddProductScreen = ({route, navigation}: Props) => {
   if (isLoading) return <LoadingScreen text="Loading product" />;
   return (
     <ScrollView style={styles.container}>
+      <Toast ref={ref => Toast.setRef(ref)} />
       <Input
         label="Product name"
         placeholder="Iphone XS..."
@@ -130,6 +144,7 @@ const AddProductScreen = ({route, navigation}: Props) => {
             buttonStyle={{backgroundColor: '#7472F3'}}
             iconRight
             icon={<Icon name="image-outline" size={20} style={{marginLeft: 10, color: '#fff'}} />}
+            onPress={takePhotoGallery}
           />
         </View>
       )}
