@@ -1,5 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
 import {useCategories} from '../hooks/useCategories';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {Button, Input} from 'react-native-elements';
@@ -9,6 +11,7 @@ import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useForm} from '../hooks/useForm';
 import {ProductsContext} from '../context/ProductsContext';
+import LoadingScreen from './LoadingScreen';
 
 interface Props extends StackScreenProps<ProductsStackParams, 'AddProductScreen'> {}
 
@@ -17,13 +20,15 @@ const AddProductScreen = ({route, navigation}: Props) => {
   //le seteamos estos valores por defectos pq podemos tener problemas con q
   //vengan undefined
   const {name = '', id = ''} = route.params;
-  const {loadProductById, addProduct, updateProduct} = useContext(ProductsContext);
+  const {loadProductById, addProduct, updateProduct, loadImage} = useContext(ProductsContext);
   const {_id, nombre, categoriaId, img, onChangeHandler, state, setFormValues} = useForm({
     _id: '',
     nombre: name,
     categoriaId: '',
     img: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [tempImg, setTempImg] = useState<string>();
 
   useEffect(() => {
     if (name) {
@@ -64,6 +69,21 @@ const AddProductScreen = ({route, navigation}: Props) => {
     }
   };
 
+  const takePhoto = () => {
+    launchCamera({quality: 0.5, mediaType: 'photo'}, response => {
+      // console.log(response.didCancel);
+      if (response.didCancel) return;
+      if (!response.assets![0].uri) return;
+      setIsLoading(true);
+      setTempImg(response.assets![0].uri);
+      console.log(response.assets![0].uri); //esto va a ser lo q le mandamos al backend
+      loadImage(response, _id).then(() => {
+        setIsLoading(false);
+      });
+    });
+  };
+
+  if (isLoading) return <LoadingScreen text="Loading product" />;
   return (
     <ScrollView style={styles.container}>
       <Input
@@ -102,6 +122,7 @@ const AddProductScreen = ({route, navigation}: Props) => {
             buttonStyle={{backgroundColor: '#7472F3'}}
             iconRight
             icon={<Icon name="camera-outline" size={20} style={{marginLeft: 10, color: '#fff'}} />}
+            onPress={takePhoto}
           />
           <Button
             title="Gallery"
@@ -112,7 +133,9 @@ const AddProductScreen = ({route, navigation}: Props) => {
           />
         </View>
       )}
-      {img.length > 0 && <Image source={{uri: img}} style={{width: 200, height: 200}} />}
+
+      {img.length > 0 && !tempImg && <Image source={{uri: img}} style={styles.img} />}
+      {tempImg && <Image source={{uri: tempImg}} style={styles.img} />}
       <Text>{JSON.stringify(state, null, 5)}</Text>
     </ScrollView>
   );
@@ -132,5 +155,10 @@ const styles = StyleSheet.create({
     color: 'black',
     height: 45,
     marginTop: 5,
+  },
+  img: {
+    width: '100%',
+    height: 300,
+    marginTop: 15,
   },
 });

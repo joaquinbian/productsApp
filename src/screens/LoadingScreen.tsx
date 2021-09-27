@@ -1,11 +1,13 @@
 import React from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
-
-const LoadingScreen = () => {
+interface Props {
+  text?: string;
+}
+const LoadingScreen = ({text}: Props) => {
   return (
     <View style={styles.container}>
       <ActivityIndicator size={35} color="#7472F3" />
-      <Text>Loading</Text>
+      <Text>{text ? text : 'Loading'}</Text>
     </View>
   );
 };

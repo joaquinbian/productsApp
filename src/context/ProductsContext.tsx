@@ -1,4 +1,5 @@
 import React, {createContext, useEffect, useState} from 'react';
+import {ImagePickerResponse} from 'react-native-image-picker';
 import productsApi from '../api/productsApi';
 import {Products, Producto} from '../interfaces/authInterface';
 
@@ -32,7 +33,7 @@ const ProductsProvider = ({children}: Props) => {
       const response = await productsApi.get<Products>('/productos?limite=50');
       //de a poco
       //esto lo hacemos asi por si hacemos un lazyload y tenemos que ir cargando
-      console.log('response');
+      // console.log('response');
 
       setProducts([...response.data.productos]);
       // setProducts([...products, ...response.data.productos]);
@@ -78,7 +79,25 @@ const ProductsProvider = ({children}: Props) => {
 
     return myProduct.data;
   };
-  const loadImage = async (data: any, id: string) => {};
+  const loadImage = async (data: ImagePickerResponse, id: string) => {
+    const {uri, fileName, type} = data.assets![0];
+    const fileToUpload = {uri, name: fileName, type};
+    const img = new FormData();
+    img.append('archivo', fileToUpload);
+
+    // console.log(uri, 'en loadImage');
+    // console.log(id);
+
+    try {
+      const resp = await productsApi.put(`/uploads/productos/${id}`, img);
+      console.log(resp);
+      await loadProductById(id);
+    } catch (error) {
+      console.log(error);
+
+      console.log(error.errors);
+    }
+  };
 
   const data: ProductsState = {
     products,

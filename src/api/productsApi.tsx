@@ -16,7 +16,7 @@ productsApi.interceptors.request.use(
     //tuve un error aca porque no le puse el await
     const token = await AsyncStorage.getItem('token');
     if (token) {
-      console.log('este es el token', token);
+      // console.log('este es el token', token);
 
       //ahora todas las peticiiones que hagamos con productsAPI
       //en el header van a tener el token

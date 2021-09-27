@@ -45,10 +45,10 @@ const AuthProvider = ({children}: Props) => {
   }, []);
 
   const checkToken = async () => {
-    console.log('me ejecuto, check token');
+    // console.log('me ejecuto, check token');
 
     const token = await AsyncStorage.getItem('token');
-    console.log(token);
+    // console.log(token);
     if (!token) return dispatch({type: 'notAuthenticated'});
 
     try {
@@ -77,7 +77,7 @@ const AuthProvider = ({children}: Props) => {
 
     try {
       const response = await productsApi.post<LoginResponse>('/auth/login', {correo, password});
-      console.log(response.data, 'soy la response');
+      // console.log(response.data, 'soy la response');
       const {token, usuario} = response.data;
 
       dispatch({type: 'signUp', payload: {user: usuario, token}});

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 //T es un generico al cual le decimos que va  aser un objeto,
 //y lo que nosotros le pasamos al useForm va a ser un obj
@@ -7,6 +7,7 @@ import {useState} from 'react';
 
 export const useForm = <T extends Object>(initialState: T) => {
   const [state, setState] = useState(initialState);
+  const isMounted = useRef(true);
 
   const onChangeHandler = (text: string, field: keyof T) => {
     setState({
@@ -25,12 +26,19 @@ export const useForm = <T extends Object>(initialState: T) => {
   const setFormValues = (newData: T) => {
     //entonces acá podemos cambiar uno o mas valores del estado
     //pasandoselos todos como parametro a esta funcion
-    setState({
-      ...state,
-      ...newData,
-    });
+    if (isMounted.current) {
+      setState({
+        ...state,
+        ...newData,
+      });
+    }
   };
 
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
   return {
     ...state,
     state,

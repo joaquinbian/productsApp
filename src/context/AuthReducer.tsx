@@ -20,7 +20,7 @@ export const authReducer = (state: AuthState, action: ActionType): AuthState => 
         status: 'not-authenticated',
       };
     case 'removeMsg':
-      console.log('me ejecutoooo');
+      // console.log('me ejecutoooo');
 
       return {
         ...state,
