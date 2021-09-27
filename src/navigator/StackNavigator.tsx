@@ -19,6 +19,7 @@ const StackNavigator = () => {
   const {status} = state;
 
   if (status === 'checking') return <LoadingScreen />;
+  console.log(status);
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -31,6 +32,7 @@ const StackNavigator = () => {
         <>
           <Stack.Screen name="ProductsStack" component={ProductsNavigator} />
           <Stack.Screen name="Home" component={Home} />
+          {console.log('AUTENTHICATE')}
         </>
       ) : (
         <>

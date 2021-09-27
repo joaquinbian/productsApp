@@ -45,6 +45,8 @@ const AuthProvider = ({children}: Props) => {
   }, []);
 
   const checkToken = async () => {
+    console.log('me ejecuto, check token');
+
     const token = await AsyncStorage.getItem('token');
     console.log(token);
     if (!token) return dispatch({type: 'notAuthenticated'});
@@ -82,7 +84,9 @@ const AuthProvider = ({children}: Props) => {
       await AsyncStorage.setItem('token', token);
     } catch (err) {
       // return dispatch({type: 'addError', payload: 'error doing login'});
-      return dispatch({type: 'addMsg', payload: {type: 'error', message: 'eror doing login'}});
+      console.log(err, 'a');
+
+      return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error doing login'}});
     }
   };
 
@@ -95,10 +99,12 @@ const AuthProvider = ({children}: Props) => {
         dispatch({type: 'signUp', payload: {user: usuario, token}});
       }, 2000);
     } catch (error) {
+      console.log(error.response);
+
       if (error.response.status === 400) {
         return dispatch({type: 'addMsg', payload: {type: 'error', message: 'this mail is already in use'}});
       } else {
-        return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error doing login'}});
+        return dispatch({type: 'addMsg', payload: {type: 'error', message: 'error registering user'}});
       }
     }
   };

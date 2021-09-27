@@ -28,11 +28,17 @@ const ProductsProvider = ({children}: Props) => {
   }, []);
 
   const loadProducts = async () => {
-    const response = await productsApi.get<Products>('/productos?limite=50');
-    //esto lo hacemos asi por si hacemos un lazyload y tenemos que ir cargando
-    //de a poco
-    // setProducts([...products, ...response.data.productos]);
-    setProducts([...response.data.productos]);
+    try {
+      const response = await productsApi.get<Products>('/productos?limite=50');
+      //de a poco
+      //esto lo hacemos asi por si hacemos un lazyload y tenemos que ir cargando
+      console.log('response');
+
+      setProducts([...response.data.productos]);
+      // setProducts([...products, ...response.data.productos]);
+    } catch (error) {
+      console.log({error}, 'error en loadProducts');
+    }
   };
 
   const addProduct = async (categoryId: string, productName: string): Promise<Producto> => {

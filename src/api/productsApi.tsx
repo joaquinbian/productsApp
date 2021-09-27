@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const baseURL = 'http://192.168.1.111:8080/api';
+//ejecutar hostname -I para saber la ip y cambiarla
+//cuando cambias de red te dan otra ip
+const baseURL = 'http://192.168.0.76:8080/api';
 
 const productsApi = axios.create({baseURL});
 
