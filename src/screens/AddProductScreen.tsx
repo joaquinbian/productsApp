@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
@@ -21,7 +21,14 @@ const AddProductScreen = ({route, navigation}: Props) => {
   //le seteamos estos valores por defectos pq podemos tener problemas con q
   //vengan undefined
   const {name = '', id = ''} = route.params;
-  const {loadProductById, addProduct, updateProduct, loadImage} = useContext(ProductsContext);
+  const {
+    state: productsState,
+    loadProductById,
+    addProduct,
+    updateProduct,
+    loadImage,
+    removeMsg,
+  } = useContext(ProductsContext);
   const {_id, nombre, categoriaId, img, onChangeHandler, state, setFormValues} = useForm({
     _id: '',
     nombre: name,
@@ -30,6 +37,27 @@ const AddProductScreen = ({route, navigation}: Props) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [tempImg, setTempImg] = useState<string>();
+  const isMounted = useRef(true);
+
+  const {message, products} = productsState;
+
+  useEffect(() => {
+    console.log('entre effect');
+    console.log(message);
+
+    if (message.type) {
+      console.log('entre type');
+      Toast.show({
+        type: message.type,
+        text1: message.message,
+        visibilityTime: 1000,
+        onHide: removeMsg,
+      });
+    }
+    return () => {
+      removeMsg();
+    };
+  }, [message.message]);
 
   useEffect(() => {
     if (name) {
@@ -72,26 +100,54 @@ const AddProductScreen = ({route, navigation}: Props) => {
 
   const takePhoto = () => {
     launchCamera({quality: 0.5, mediaType: 'photo'}, response => {
-      // console.log(response.didCancel);
       if (response.didCancel) return;
       if (!response.assets![0].uri) return;
       setTempImg(response.assets![0].uri);
       setIsLoading(true);
-      // console.log(response.assets![0].uri); //esto va a ser lo q le mandamos al backend
-      loadImage(response, _id).then(() => {
+      loadImage(response, _id).then(resp => {
         setIsLoading(false);
+        // console.log(resp, 'en el then');
+        if (resp === 200) {
+          return Toast.show({
+            type: 'success',
+            text1: 'image loaded successfully',
+            visibilityTime: 1000,
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'error loading image',
+            text2: 'please try again',
+            visibilityTime: 1000,
+          });
+        }
       });
     });
   };
 
-  const takePhotoGallery = () => {
+  const takePhotoGallery = async () => {
     launchImageLibrary({quality: 0.5, mediaType: 'photo'}, response => {
       if (response.didCancel) return;
       if (!response.assets![0].uri) return;
       setTempImg(response.assets![0].uri);
       setIsLoading(true);
-      loadImage(response, _id).then(() => {
+      loadImage(response, _id).then(resp => {
         setIsLoading(false);
+        // console.log(resp, 'en el then');
+        if (resp === 200) {
+          return Toast.show({
+            type: 'success',
+            text1: 'image loaded successfully',
+            visibilityTime: 1000,
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'error loading image',
+            text2: 'please try again',
+            visibilityTime: 1000,
+          });
+        }
       });
     });
   };
@@ -99,7 +155,7 @@ const AddProductScreen = ({route, navigation}: Props) => {
   if (isLoading) return <LoadingScreen text="Loading product" />;
   return (
     <ScrollView style={styles.container}>
-      <Toast ref={ref => Toast.setRef(ref)} />
+      <Toast ref={ref => Toast.setRef(ref)} style={{zIndex: 1000}} />
       <Input
         label="Product name"
         placeholder="Iphone XS..."

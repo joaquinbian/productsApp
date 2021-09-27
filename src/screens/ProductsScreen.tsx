@@ -12,9 +12,10 @@ import {AuthContext} from '../context/AuthContext';
 interface Props extends StackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 const ProductsScreen = ({navigation}: Props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const {products, loadProducts, deleteProduct} = useContext(ProductsContext);
+  const {state: productsState, loadProducts, deleteProduct} = useContext(ProductsContext);
   const {state} = useContext(AuthContext);
   const {user} = state;
+  const {message, products} = productsState;
 
   useEffect(() => {
     navigation.setOptions({
