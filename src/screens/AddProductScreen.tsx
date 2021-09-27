@@ -52,6 +52,9 @@ const AddProductScreen = ({route, navigation}: Props) => {
   };
 
   const saveOrUpdate = async () => {
+    //si existe el id es porque el producto ya existe,
+    //osea que cuando apretemos save, estamos editando/actualizando
+    //un producto, y la funcion a ejecutar es distinta
     if (id.length) {
       updateProduct(categoriaId, _id, nombre);
     } else {

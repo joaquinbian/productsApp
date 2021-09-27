@@ -1,5 +1,5 @@
-import React, {useContext, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, RefreshControl} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {ProductsContext} from '../context/ProductsContext';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -10,7 +10,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 interface Props extends StackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 const ProductsScreen = ({navigation}: Props) => {
-  const {products} = useContext(ProductsContext);
+  const {products, loadProducts} = useContext(ProductsContext);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -24,6 +25,12 @@ const ProductsScreen = ({navigation}: Props) => {
       ),
     });
   }, []);
+  const setOnRefresh = () => {
+    setIsRefreshing(true);
+    loadProducts().then(() => {
+      setIsRefreshing(false);
+    });
+  };
   return (
     <View style={{flex: 1, marginHorizontal: 10}}>
       <FlatList
@@ -42,6 +49,9 @@ const ProductsScreen = ({navigation}: Props) => {
         )}
         keyExtractor={item => item._id}
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+        refreshControl={<RefreshControl onRefresh={setOnRefresh} refreshing={isRefreshing} />}
+        // refreshing={isRefreshing} //nose porque no funciona con estos dos
+        // onRefresh={setOnRefresh}
       />
     </View>
   );
