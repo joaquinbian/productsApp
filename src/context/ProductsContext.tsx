@@ -62,7 +62,15 @@ const ProductsProvider = ({children}: Props) => {
     );
   };
 
-  const deleteProduct = async (id: string) => {};
+  const deleteProduct = async (id: string) => {
+    try {
+      await productsApi.delete<Producto>(`/productos/${id}`);
+      await loadProducts();
+      // return deletedProduct; //por si quieren impirmir un mensaje con el producto eliminado
+    } catch (error) {
+      console.log({error});
+    }
+  };
 
   const loadProductById = async (id: string): Promise<Producto> => {
     const myProduct = await productsApi.get<Producto>(`/productos/${id}`);

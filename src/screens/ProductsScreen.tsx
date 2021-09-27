@@ -7,11 +7,14 @@ import {Producto} from '../interfaces/authInterface';
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {AuthContext} from '../context/AuthContext';
 
 interface Props extends StackScreenProps<ProductsStackParams, 'ProductsScreen'> {}
 const ProductsScreen = ({navigation}: Props) => {
-  const {products, loadProducts} = useContext(ProductsContext);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const {products, loadProducts, deleteProduct} = useContext(ProductsContext);
+  const {state} = useContext(AuthContext);
+  const {user} = state;
 
   useEffect(() => {
     navigation.setOptions({
@@ -41,10 +44,18 @@ const ProductsScreen = ({navigation}: Props) => {
             activeOpacity={0.8}
             style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text>{item.nombre}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('AddProductScreen', {id: item._id, name: item.nombre})}>
-              <Icon name="create-outline" size={20} style={{marginRight: 10}} />
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row'}}>
+              {user?.rol === 'ADMIN_ROLE' ? (
+                <TouchableOpacity onPress={() => deleteProduct(item._id)}>
+                  <Icon name="trash-outline" size={20} style={{marginRight: 10}} color="red" />
+                </TouchableOpacity>
+              ) : null}
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('AddProductScreen', {id: item._id, name: item.nombre})}>
+                <Icon name="create-outline" size={20} style={{marginRight: 10}} />
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         )}
         keyExtractor={item => item._id}
